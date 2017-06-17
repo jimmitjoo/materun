@@ -1,0 +1,57 @@
+{
+  "hi": "Hej",
+
+  "loading": "Laddar...",
+  "find_my_location": "Hitta min placering",
+  "found_your_location": "Vi hittade din placering!",
+  "minute_short": "min",
+  "second_short": "sek",
+  "time_prefix": "kl.",
+
+  "join_or_wait_for_joins": "Du kan antingen vänta på att andra deltar i ditt pass, eller kan du delta i någon annans pass.",
+
+  "auth.failed": "Tyvärr är detta felaktiga inloggningsuppgifter.",
+  "auth.throttle": "För många inloggningsförsök. Var god försök igen om :seconds sekunder.",
+
+  "auth.register_information": "Hitta människor i ditt område som vill springa tillsammans med dig.",
+
+  "pagination.previous": "&laquo; Föregående",
+  "pagination.next": "Nästa &raquo;",
+
+  "passwords.password": "Lösenord måste vara minst 6 tecken och matcha upprepningen",
+  "passwords.reset": "Ditt lösenord har återställts!",
+  "passwords.sent": "Vi har mailat dig en återställningslänk för lösenordet.",
+  "passwords.token": "Detta är ingen giltig token.",
+  "passwords.user": "Vi kan inte hitta någon användare med den e-postadressen.",
+
+  "validation.accepted": ":attribute måste accepteras.",
+  "validation.active_url": ":attribute är inte en giltig URL.",
+  "validation.after": ":attribute måste vara ett datum efter :date.",
+
+  "user.name": "Namn",
+  "user.email": "E-post",
+  "user.password": "Lösenord",
+  "user.confirm_password": "Upprepa lösenord",
+  "user.register": "Registrera",
+  "user.login": "Logga in",
+  "user.remember_me": "Kom ihåg mig",
+  "user.forgot_password": "Glömt lösenordet?",
+  "user.create_account": "Skapa konto",
+
+  "workout.create_workout": "Skapa träningspass",
+  "workout.workouts_nearby": "Träningspass i närheten",
+  "workout.expected_tempo": "Ditt tänkta tempo",
+  "workout.expected_distance": "Din tänkta distans",
+  "workout.when": "När startar passet?",
+  "workout.find_people_to_run_with": "Hitta personer att springa med",
+
+  "workout.start": "Börjar",
+  "workout.attendees": "Deltagare",
+  "workout.tempo": "Tempo",
+  "workout.distance": "Distans",
+  "workout.how_far_away": "Hur långt bort?",
+  "workout.join": "Delta",
+  "workout.your_workout": "Ditt pass"
+
+
+}
