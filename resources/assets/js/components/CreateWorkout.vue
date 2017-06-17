@@ -1,5 +1,10 @@
 <template>
     <form v-on:submit.prevent="submitWorkout">
+
+        <div class="alert alert-info">
+            {{ lang['workout.create_explanation'] }}
+        </div>
+
         <div class="form-group">
             <label>{{ lang["workout.expected_tempo"] }}</label>
             <div class="row">
@@ -74,7 +79,7 @@
                 class="btn btn-primary">{{ lang["workout.find_people_to_run_with"] }}
         </button>
 
-        <ul>
+        <ul style="display: none">
             <li>Tempo: {{ (workout.tempoMinute * 60) + workout.tempoSeconds }}</li>
             <li>Distance: {{ workout.distance }}km</li>
             <li>Date: {{ workout.date }}</li>
@@ -138,6 +143,7 @@
             submitWorkout() {
 
                 let postData = {
+                    user_id: window.user_id,
                     tempo: (this.workout.tempoMinute * 60) + this.workout.tempoSeconds,
                     distance: this.workout.distance,
                     latitude: this.workout.latitude,
@@ -147,11 +153,7 @@
 
                 axios.post('/api/workout', postData)
                     .then(response => {
-                        console.log(response)
-
-                        localStorage.setItem('myWorkout', JSON.stringify({
-                            id: response.data.id
-                        }))
+                        window.user_workout = response.data.id
 
                         window.location.href = "/list";
                     }).catch(error => {

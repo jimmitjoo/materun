@@ -23,6 +23,10 @@ class CreateWorkoutsTable extends Migration
             $table->dateTime('starting');
             $table->timestamps();
         });
+        Schema::create('workout_user', function (Blueprint $table) {
+            $table->integer('workout_id');
+            $table->integer('user_id');
+        });
     }
 
     /**
@@ -33,5 +37,6 @@ class CreateWorkoutsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('workouts');
+        Schema::dropIfExists('workout_user');
     }
 }

@@ -1794,6 +1794,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     mounted: function mounted() {
@@ -1847,6 +1852,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         submitWorkout: function submitWorkout() {
 
             var postData = {
+                user_id: window.user_id,
                 tempo: this.workout.tempoMinute * 60 + this.workout.tempoSeconds,
                 distance: this.workout.distance,
                 latitude: this.workout.latitude,
@@ -1855,11 +1861,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             };
 
             axios.post('/api/workout', postData).then(function (response) {
-                console.log(response);
-
-                localStorage.setItem('myWorkout', JSON.stringify({
-                    id: response.data.id
-                }));
+                window.user_workout = response.data.id;
 
                 window.location.href = "/list";
             }).catch(function (error) {
@@ -1913,17 +1915,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     mounted: function mounted() {
-        console.log('Listing Workouts');
+        var _this = this;
 
         this.myLocation = JSON.parse(localStorage.getItem('myLocation'));
-        this.myWorkout = JSON.parse(localStorage.getItem('myWorkout'));
 
-        if (this.myLocation !== null) {
-            this.getWorkouts();
-        }
+        setTimeout(function () {
+            _this.myWorkout = {
+                id: window.user_workout
+            };
+
+            if (_this.myLocation !== null) {
+                _this.getWorkouts();
+            }
+        }, 1);
     },
     data: function data() {
         return {
@@ -1936,13 +1944,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         getWorkouts: function getWorkouts() {
-            var _this = this;
+            var _this2 = this;
 
             axios.get('/api/workout/' + this.myLocation.latitude + '/' + this.myLocation.longitude).then(function (response) {
-                _this.workouts = response.data;
+                _this2.workouts = response.data;
 
-                _this.workouts.forEach(function (workout) {
-                    _this.formatTempo(workout);
+                _this2.workouts.forEach(function (workout) {
+                    _this2.formatTempo(workout);
                 });
             });
         },
@@ -1953,6 +1961,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (workout.seconds < 10) workout.seconds = '0' + workout.seconds;
         },
         joinWorkout: function joinWorkout(workout_id) {
+
+            axios.post('/api/workout/' + workout_id + '/join', { id: window.user_id }).then(function (response) {}).catch(function (error) {});
+
             console.log(window.user_id + ' wants to join ' + workout_id);
         }
     }
@@ -32063,6 +32074,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_c('div', {
+    staticClass: "alert alert-info"
+  }, [_vm._v("\n        " + _vm._s(_vm.lang['workout.create_explanation']) + "\n    ")]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', [_vm._v(_vm._s(_vm.lang["workout.expected_tempo"]))]), _vm._v(" "), _c('div', {
     staticClass: "row"
@@ -32241,7 +32254,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "disabled": _vm.workout.latitude == null || _vm.workout.longitude == null
     }
-  }, [_vm._v(_vm._s(_vm.lang["workout.find_people_to_run_with"]) + "\n    ")]), _vm._v(" "), _c('ul', [_c('li', [_vm._v("Tempo: " + _vm._s((_vm.workout.tempoMinute * 60) + _vm.workout.tempoSeconds))]), _vm._v(" "), _c('li', [_vm._v("Distance: " + _vm._s(_vm.workout.distance) + "km")]), _vm._v(" "), _c('li', [_vm._v("Date: " + _vm._s(_vm.workout.date))]), _vm._v(" "), _c('li', [_vm._v("Time: " + _vm._s(_vm.workout.hour) + ":00")]), _vm._v(" "), _c('li', [_vm._v("Lat: " + _vm._s(_vm.workout.latitude))]), _vm._v(" "), _c('li', [_vm._v("Long: " + _vm._s(_vm.workout.longitude))])])])
+  }, [_vm._v(_vm._s(_vm.lang["workout.find_people_to_run_with"]) + "\n    ")]), _vm._v(" "), _c('ul', {
+    staticStyle: {
+      "display": "none"
+    }
+  }, [_c('li', [_vm._v("Tempo: " + _vm._s((_vm.workout.tempoMinute * 60) + _vm.workout.tempoSeconds))]), _vm._v(" "), _c('li', [_vm._v("Distance: " + _vm._s(_vm.workout.distance) + "km")]), _vm._v(" "), _c('li', [_vm._v("Date: " + _vm._s(_vm.workout.date))]), _vm._v(" "), _c('li', [_vm._v("Time: " + _vm._s(_vm.workout.hour) + ":00")]), _vm._v(" "), _c('li', [_vm._v("Lat: " + _vm._s(_vm.workout.latitude))]), _vm._v(" "), _c('li', [_vm._v("Long: " + _vm._s(_vm.workout.longitude))])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -42000,6 +42017,7 @@ module.exports = __webpack_require__(10);
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
+	"./en.json": 56,
 	"./sv.json": 55
 };
 function webpackContext(req) {
@@ -42034,9 +42052,11 @@ module.exports = {
 	"auth.failed": "Tyvärr är detta felaktiga inloggningsuppgifter.",
 	"auth.throttle": "För många inloggningsförsök. Var god försök igen om :seconds sekunder.",
 	"auth.register_information": "Hitta människor i ditt område som vill springa tillsammans med dig.",
+	"auth.why_do_i_need_an_account": "Varför behöver jag ett konto?",
+	"auth.why_do_i_need_an_account_explanation": "Vi måste be dig skapa ett konto för att hålla reda på vilka pass du vill få information om, ex. om de ställs in eller om någon anmäler sig till dina egna pass.",
 	"pagination.previous": "&laquo; Föregående",
 	"pagination.next": "Nästa &raquo;",
-	"passwords.password": "Lösenord måste vara minst 6 tecken och matcha upprepningen",
+	"passwords.password": "Lösenord måste vara minst 6 tecken och matcha upprepningen.",
 	"passwords.reset": "Ditt lösenord har återställts!",
 	"passwords.sent": "Vi har mailat dig en återställningslänk för lösenordet.",
 	"passwords.token": "Detta är ingen giltig token.",
@@ -42053,6 +42073,8 @@ module.exports = {
 	"user.remember_me": "Kom ihåg mig",
 	"user.forgot_password": "Glömt lösenordet?",
 	"user.create_account": "Skapa konto",
+	"user.logout": "Logga ut",
+	"workout.create_explanation": "Här skapar du ett träningspass som andra kan ansluta till. Tempo är ungefär hur lång tid det kommer ta att avverka en kilometer på. Distans är hur lång hela din runda blir. Samt måste vi veta din position för att veta vart vi ska sätta upp ditt pass.",
 	"workout.create_workout": "Skapa träningspass",
 	"workout.workouts_nearby": "Träningspass i närheten",
 	"workout.expected_tempo": "Ditt tänkta tempo",
@@ -42066,6 +42088,57 @@ module.exports = {
 	"workout.how_far_away": "Hur långt bort?",
 	"workout.join": "Delta",
 	"workout.your_workout": "Ditt pass"
+};
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"hi": "Hi",
+	"loading": "Loading...",
+	"find_my_location": "Find My Location",
+	"found_your_location": "We Found Your Location!",
+	"minute_short": "min",
+	"second_short": "sec",
+	"time_prefix": "At:",
+	"join_or_wait_for_joins": "You can either wait for someone to join your workout, or you can join someone elses workout.",
+	"auth.failed": "These credentials do not match our records.",
+	"auth.throttle": "Too many login attempts. Please try again in :seconds seconds.",
+	"auth.register_information": "Find people in your area that wants to run with you.",
+	"pagination.previous": "&laquo; Previous",
+	"pagination.next": "Next &raquo;",
+	"passwords.password": "Passwords must be at least six characters and match the confirmation.",
+	"passwords.reset": "Your password has been reset!",
+	"passwords.sent": "We have e-mailed your password reset link!",
+	"passwords.token": "This password reset token is invalid.",
+	"passwords.user": "We can't find a user with that e-mail address.",
+	"validation.accepted": "The :attribute must be accepted.",
+	"validation.active_url": "The :attribute is not a valid URL.",
+	"validation.after": "The :attribute must be a date after :date.",
+	"user.name": "Name",
+	"user.email": "E-mail Address",
+	"user.password": "Password",
+	"user.confirm_password": "Confirm Password",
+	"user.register": "Register",
+	"user.login": "Login",
+	"user.remember_me": "Remember me",
+	"user.forgot_password": "Forgot Your Password?",
+	"user.create_account": "Create Account",
+	"user.logout": "Log out",
+	"workout.create_workout": "Create Workout",
+	"workout.workouts_nearby": "Workouts Nearby",
+	"workout.expected_tempo": "Your expected tempo",
+	"workout.expected_distance": "Your expected distance",
+	"workout.when": "When does the workout start?",
+	"workout.find_people_to_run_with": "Find People To Run With",
+	"workout.start": "Start",
+	"workout.attendees": "Attendees",
+	"workout.tempo": "Tempo",
+	"workout.distance": "Distance",
+	"workout.how_far_away": "How Far Away?",
+	"workout.join": "Join",
+	"workout.your_workout": "Your Workout"
 };
 
 /***/ })

@@ -89,6 +89,7 @@
     window.locale = '{{ config('app.locale') }}';
     @if (Auth::check())
         window.user_id = {{ Auth::user()->id }};
+        window.user_workout = {{ Auth::user()->my_workout }};
     @endif
 </script>
 </body>

@@ -1,0 +1,58 @@
+{
+  "hi": "Hi",
+
+  "loading": "Loading...",
+  "find_my_location": "Find My Location",
+  "found_your_location": "We Found Your Location!",
+  "minute_short": "min",
+  "second_short": "sec",
+  "time_prefix": "At:",
+
+  "join_or_wait_for_joins": "You can either wait for someone to join your workout, or you can join someone elses workout.",
+
+  "auth.failed": "These credentials do not match our records.",
+  "auth.throttle": "Too many login attempts. Please try again in :seconds seconds.",
+
+  "auth.register_information": "Find people in your area that wants to run with you.",
+
+  "pagination.previous": "&laquo; Previous",
+  "pagination.next": "Next &raquo;",
+
+  "passwords.password": "Passwords must be at least six characters and match the confirmation.",
+  "passwords.reset": "Your password has been reset!",
+  "passwords.sent": "We have e-mailed your password reset link!",
+  "passwords.token": "This password reset token is invalid.",
+  "passwords.user": "We can't find a user with that e-mail address.",
+
+  "validation.accepted": "The :attribute must be accepted.",
+  "validation.active_url": "The :attribute is not a valid URL.",
+  "validation.after": "The :attribute must be a date after :date.",
+
+  "user.name": "Name",
+  "user.email": "E-mail Address",
+  "user.password": "Password",
+  "user.confirm_password": "Confirm Password",
+  "user.register": "Register",
+  "user.login": "Login",
+  "user.remember_me": "Remember me",
+  "user.forgot_password": "Forgot Your Password?",
+  "user.create_account": "Create Account",
+  "user.logout": "Log out",
+
+  "workout.create_workout": "Create Workout",
+  "workout.workouts_nearby": "Workouts Nearby",
+  "workout.expected_tempo": "Your expected tempo",
+  "workout.expected_distance": "Your expected distance",
+  "workout.when": "When does the workout start?",
+  "workout.find_people_to_run_with": "Find People To Run With",
+
+  "workout.start": "Start",
+  "workout.attendees": "Attendees",
+  "workout.tempo": "Tempo",
+  "workout.distance": "Distance",
+  "workout.how_far_away": "How Far Away?",
+  "workout.join": "Join",
+  "workout.your_workout": "Your Workout"
+
+
+}

@@ -14,11 +14,13 @@
   "auth.throttle": "För många inloggningsförsök. Var god försök igen om :seconds sekunder.",
 
   "auth.register_information": "Hitta människor i ditt område som vill springa tillsammans med dig.",
+  "auth.why_do_i_need_an_account": "Varför behöver jag ett konto?",
+  "auth.why_do_i_need_an_account_explanation": "Vi måste be dig skapa ett konto för att hålla reda på vilka pass du vill få information om, ex. om de ställs in eller om någon anmäler sig till dina egna pass.",
 
   "pagination.previous": "&laquo; Föregående",
   "pagination.next": "Nästa &raquo;",
 
-  "passwords.password": "Lösenord måste vara minst 6 tecken och matcha upprepningen",
+  "passwords.password": "Lösenord måste vara minst 6 tecken och matcha upprepningen.",
   "passwords.reset": "Ditt lösenord har återställts!",
   "passwords.sent": "Vi har mailat dig en återställningslänk för lösenordet.",
   "passwords.token": "Detta är ingen giltig token.",
@@ -37,6 +39,9 @@
   "user.remember_me": "Kom ihåg mig",
   "user.forgot_password": "Glömt lösenordet?",
   "user.create_account": "Skapa konto",
+  "user.logout": "Logga ut",
+
+  "workout.create_explanation": "Här skapar du ett träningspass som andra kan ansluta till. Tempo är ungefär hur lång tid det kommer ta att avverka en kilometer på. Distans är hur lång hela din runda blir. Samt måste vi veta din position för att veta vart vi ska sätta upp ditt pass.",
 
   "workout.create_workout": "Skapa träningspass",
   "workout.workouts_nearby": "Träningspass i närheten",

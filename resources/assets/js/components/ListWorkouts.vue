@@ -23,7 +23,8 @@
                         <td>{{ workout.distance }} km</td>
                         <td>{{ parseFloat(workout.distance_in_km).toFixed(2) }} km</td>
                         <td>
-                            <button v-if="myWorkout.id != workout.id" @click="joinWorkout(workout.id)" class="btn btn-success">{{ lang["workout.join"]
+                            <button v-if="myWorkout.id != workout.id" @click="joinWorkout(workout.id)"
+                                    class="btn btn-success">{{ lang["workout.join"]
                                 }}
                             </button>
                             <span v-if="myWorkout.id == workout.id">{{ lang["workout.your_workout"] }}</span>
@@ -38,14 +39,21 @@
 <script>
     export default {
         mounted() {
-            console.log('Listing Workouts');
 
-            this.myLocation = JSON.parse(localStorage.getItem('myLocation'))
-            this.myWorkout = JSON.parse(localStorage.getItem('myWorkout'))
+            this.myLocation = JSON.parse(localStorage.getItem('myLocation'));
 
-            if (this.myLocation !== null) {
-                this.getWorkouts()
-            }
+            setTimeout(() => {
+                this.myWorkout = {
+                    id: window.user_workout
+                }
+
+                if (this.myLocation !== null) {
+                    this.getWorkouts()
+                }
+            }, 1);
+
+
+
         },
         data() {
             return {
@@ -73,6 +81,14 @@
                 if (workout.seconds < 10) workout.seconds = '0' + workout.seconds;
             },
             joinWorkout(workout_id) {
+
+                axios.post('/api/workout/' + workout_id + '/join', {id: window.user_id})
+                    .then(response => {
+
+                    }).catch(error => {
+
+                });
+
                 console.log(window.user_id + ' wants to join ' + workout_id);
             }
         }

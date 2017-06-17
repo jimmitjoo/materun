@@ -14,6 +14,7 @@ class WorkoutController extends Controller
     {
 
         $this->validate($request, [
+            'user_id' => 'required|integer',
             'tempo' => 'required|integer',
             'distance' => 'required|integer',
             'latitude' => 'required',
@@ -22,6 +23,7 @@ class WorkoutController extends Controller
         ]);
 
         $workout = new Workout();
+        $workout->user_id = $request->get('user_id');
         $workout->tempo = $request->get('tempo');
         $workout->distance = $request->get('distance');
         $workout->latitude = $request->get('latitude');
@@ -56,6 +58,14 @@ class WorkoutController extends Controller
         }
 
         return $nearbys;
+
+    }
+
+    public function join(Workout $workout_id, Request $request){
+
+        $user_id = $request->get('id');
+
+        $workout_id->users()->attach($user_id);
 
     }
 }

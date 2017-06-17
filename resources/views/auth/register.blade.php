@@ -4,8 +4,11 @@
     <div class="row">
         <div class="col-xs-12">
 
+            <h3>{{ __('auth.register_information') }}</h3>
+
             <div class="alert alert-info">
-                <p>{{ __('auth.register_information') }}</p>
+                <h4>{{ __('auth.why_do_i_need_an_account') }}</h4>
+                <p>{{ __('auth.why_do_i_need_an_account_explanation') }}</p>
             </div>
 
             <div class="panel panel-default">
