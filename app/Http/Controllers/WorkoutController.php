@@ -68,7 +68,7 @@ class WorkoutController extends Controller
                  SELECT ' . $latitude . ' AS latpoint,  ' . $longitude . ' AS longpoint
                ) AS p
              ORDER BY distance_in_km ASC) AS x
-             WHERE distance_in_km < .25 AND DATE(stdate) >= DATE(NOW()) AND DATE(stdate) = CURDATE() 
+             WHERE distance_in_km < 25 AND DATE(stdate) >= DATE(NOW()) AND DATE(stdate) = CURDATE() 
              ORDER BY distance_in_km ASC
              LIMIT 15');
 
