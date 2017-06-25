@@ -20,3 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::resource('workout', 'WorkoutController');
 Route::get('workout/{latitude}/{longitude}', 'WorkoutController@getWorkoutsByCoordinates');
 Route::post('workout/{workout_id}/join', 'WorkoutController@join');
+Route::post('workout/{workout_id}/leave', 'WorkoutController@leave');

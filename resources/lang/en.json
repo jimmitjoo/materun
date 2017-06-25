@@ -24,6 +24,7 @@
   "passwords.token": "This password reset token is invalid.",
   "passwords.user": "We can't find a user with that e-mail address.",
 
+  "validation.not_attending_workout": "You already have a workout booked within 2 hours from this one.",
   "validation.accepted": "The :attribute must be accepted.",
   "validation.active_url": "The :attribute is not a valid URL.",
   "validation.after": "The :attribute must be a date after :date.",
@@ -52,7 +53,10 @@
   "workout.distance": "Distance",
   "workout.how_far_away": "How Far Away?",
   "workout.join": "Join",
-  "workout.your_workout": "Your Workout"
+  "workout.leave": "Leave",
+  "workout.your_workout": "Your Workout",
+  "workout.proposed_meeting_place": "Proposed venue",
+  "workout.meeting_place_bus_station": "Bus stop"
 
 
 }

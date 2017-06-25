@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 45);
+/******/ 	return __webpack_require__(__webpack_require__.s = 50);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -471,7 +471,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(36)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(38)))
 
 /***/ }),
 /* 2 */
@@ -825,7 +825,6 @@ module.exports = g;
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -834,7 +833,7 @@ module.exports = g;
 
 __webpack_require__(32);
 
-window.Vue = __webpack_require__(43);
+window.Vue = __webpack_require__(45);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -842,14 +841,26 @@ window.Vue = __webpack_require__(43);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('create-workout', __webpack_require__(37));
-Vue.component('list-workouts', __webpack_require__(39));
+Vue.component('create-workout', __webpack_require__(39));
+Vue.component('list-workouts', __webpack_require__(40));
+Vue.component('show-workout', __webpack_require__(41));
 
 if (typeof window.locale == 'undefined') window.locale = 'sv';
-window.lang = __webpack_require__(54)("./" + window.locale + '.json');
+window.lang = __webpack_require__(47)("./" + window.locale + '.json');
 
-var app = new Vue({
-  el: '#app'
+var app = window.app = new Vue({
+  el: '#app',
+
+  methods: {
+
+    /* mapInit() {
+         let map;
+         let infowindow;
+         let service;
+           google.maps.event.addDomListener(window, 'load', function () {
+          });
+     }*/
+  }
 });
 
 /***/ }),
@@ -1798,35 +1809,40 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     mounted: function mounted() {
         var date = new Date();
         var month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
         var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
-        this.workout.date = date.getFullYear() + '-' + month + '-' + day;
-        this.workout.hour = date.getHours() + 2;
+        this.date = date.getFullYear() + '-' + month + '-' + day;
+        this.workoutHour = date.getHours() + 2;
     },
     data: function data() {
         return {
             lang: window.lang,
-            workout: {
-                tempoMinute: 5,
-                tempoSeconds: 0,
+            tempoMinutes: 5,
+            tempoSeconds: 0,
+            distance: 5,
+            date: null,
+            workoutHour: null,
+            latitude: null,
+            longitude: null,
+            form: new Form({
+                user_id: null,
+                tempo: 300,
                 distance: 5,
-                date: null,
-                hour: null,
+                starting: null,
                 latitude: null,
                 longitude: null
-            },
+            }),
             getLocationAutomatically: true,
             findingLocation: false,
             tempo: {
-                minutes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                minutes: [2, 3, 4, 5, 6, 7, 8, 9, 10],
                 seconds: [0, 15, 30, 45]
             },
-            distance: [5, 10, 15, 20, 25, 30, 40, 50, 75, 100],
+            distances: [5, 10, 15, 20, 25, 30, 40, 50, 75, 100],
             hours: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
         };
     },
@@ -1838,46 +1854,51 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.findingLocation = true;
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    _this.workout.latitude = position.coords.latitude;
-                    _this.workout.longitude = position.coords.longitude;
+                    _this.form.latitude = position.coords.latitude;
+                    _this.form.longitude = position.coords.longitude;
                     _this.findingLocation = false;
 
                     localStorage.setItem('myLocation', JSON.stringify({
-                        latitude: _this.workout.latitude,
-                        longitude: _this.workout.longitude
+                        latitude: _this.form.latitude,
+                        longitude: _this.form.longitude
                     }));
                 });
             }
         },
         submitWorkout: function submitWorkout() {
 
-            var postData = {
-                user_id: window.user_id,
-                tempo: this.workout.tempoMinute * 60 + this.workout.tempoSeconds,
-                distance: this.workout.distance,
-                latitude: this.workout.latitude,
-                longitude: this.workout.longitude,
-                starting: this.workout.date + ' ' + this.workout.hour + ':00:00'
-            };
+            this.form.user_id = window.user_id;
 
-            axios.post('/api/workout', postData).then(function (response) {
+            this.form.submit('post', '/api/workout').then(function (response) {
                 window.user_workout = response.data.id;
-
                 window.location.href = "/list";
-            }).catch(function (error) {
-                console.log(error);
             });
+        }
+    },
+    watch: {
+        tempoMinutes: function tempoMinutes(val) {
+            this.form.tempo = val * 60 + this.tempoSeconds;
+        },
+        tempoSeconds: function tempoSeconds(val) {
+            this.form.tempo = this.tempoMinutes * 60 + val;
+        },
+        date: function date(val) {
+            this.form.starting = val + ' ' + this.workoutHour + ':00:00';
+        },
+        workoutHour: function workoutHour(val) {
+            this.form.starting = this.date + ' ' + val + ':00:00';
         }
     }
 });
 
 /***/ }),
-/* 30 */,
-/* 31 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
 //
 //
 //
@@ -1950,31 +1971,221 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this2.workouts = response.data;
 
                 _this2.workouts.forEach(function (workout) {
-                    _this2.formatTempo(workout);
+                    formatTempo(workout);
+
+                    workout.has_joined = false;
+                    workout.attendees.forEach(function (attendee) {
+                        workout.has_joined = attendee.id == window.user_id;
+                    });
                 });
             });
         },
-        formatTempo: function formatTempo(workout) {
-            workout.minutes = Math.round(workout.tempo / 60);
-            workout.seconds = workout.tempo - Math.round(workout.tempo / 60) * 60;
+        joinWorkout: function joinWorkout(workout_id) {
+            var _this3 = this;
 
-            if (workout.seconds < 10) workout.seconds = '0' + workout.seconds;
+            axios.post('/api/workout/' + workout_id + '/join', { id: window.user_id }).then(function (response) {
+                _this3.getWorkouts();
+            }).catch(function (error) {});
+        },
+        leaveWorkout: function leaveWorkout(workout_id) {
+            var _this4 = this;
+
+            axios.post('/api/workout/' + workout_id + '/leave', { id: window.user_id }).then(function (response) {
+                _this4.getWorkouts();
+            }).catch(function (error) {});
+        }
+    }
+});
+
+/***/ }),
+/* 31 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+    props: ['id'],
+
+    mounted: function mounted() {
+        var _this = this;
+
+        setTimeout(function () {
+            _this.getWorkout();
+
+            _this.myWorkout = {
+                id: window.user_workout
+            };
+        }, 1);
+    },
+    data: function data() {
+        return {
+            lang: window.lang,
+            myWorkout: {},
+            workout: {
+                attendees: []
+            },
+
+            map: null,
+            service: null,
+            infowindow: null,
+            meetingPlace: ''
+        };
+    },
+
+    methods: {
+        getWorkout: function getWorkout() {
+            var _this2 = this;
+
+            axios.get('/api/workout/' + this.id).then(function (response) {
+
+                var workout = response.data;
+                formatTempo(workout);
+
+                workout.has_joined = false;
+                workout.attendees.forEach(function (attendee) {
+                    workout.has_joined = attendee.id == window.user_id;
+                });
+
+                _this2.workout = workout;
+
+                _this2.mapInitialize(workout.latitude, workout.longitude);
+            });
         },
         joinWorkout: function joinWorkout(workout_id) {
+            var _this3 = this;
 
-            axios.post('/api/workout/' + workout_id + '/join', { id: window.user_id }).then(function (response) {}).catch(function (error) {});
+            axios.post('/api/workout/' + workout_id + '/join', { id: window.user_id }).then(function (response) {
+                _this3.getWorkout();
+            }).catch(function (error) {});
+        },
+        leaveWorkout: function leaveWorkout(workout_id) {
+            var _this4 = this;
 
-            console.log(window.user_id + ' wants to join ' + workout_id);
+            axios.post('/api/workout/' + workout_id + '/leave', { id: window.user_id }).then(function (response) {
+                _this4.getWorkout();
+            }).catch(function (error) {});
+        },
+        mapInitialize: function mapInitialize(lat, lng) {
+
+            console.log(lat);
+            console.log(lng);
+
+            var origin = new google.maps.LatLng(lat, lng);
+
+            this.map = new google.maps.Map(document.getElementById('map'), {
+                mapTypeId: google.maps.MapTypeId.HYBRID,
+                center: origin,
+                zoom: 15
+            });
+
+            var request = {
+                location: origin,
+                radius: 2500,
+                types: [
+                //'train_station',
+                'bus_station']
+            };
+            //infowindow = new google.maps.InfoWindow();
+            this.service = new google.maps.places.PlacesService(this.map);
+            this.service.search(request, this.mapCallback);
+        },
+        mapCallback: function mapCallback(results, status) {
+
+            if (status == google.maps.places.PlacesServiceStatus.OK) {
+                for (var i = 0; i < 1; i++) {
+                    this.mapCreateMarker(results[i]);
+
+                    this.meetingPlace = results[i].name;
+                }
+            }
+        },
+        mapCreateMarker: function mapCreateMarker(place) {
+
+            console.log(place);
+
+            var placeLoc = place.geometry.location;
+            var marker = new google.maps.Marker({
+                map: this.map,
+                position: place.geometry.location
+            });
+
+            var content = '<strong style="font-size:1.2em">' + place.name + '</strong>' + '<br/><strong>Latitude:</strong>' + placeLoc.lat() + '<br/><strong>Longitude:</strong>' + placeLoc.lng() + '<br/><strong>Type:</strong>' + place.types[0] + '<br/><strong>Rating:</strong>' + (place.rating || 'n/a');
+
+            var more_content = '<img src="http://googleio2009-map.googlecode.com/svn-history/r2/trunk/app/images/loading.gif"/>';
+
+            //make a request for further details
+            this.service.getDetails({ reference: place.reference }, function (place, status) {
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    more_content = '<hr/><strong><a href="' + place.url + '" target="details">Details</a>';
+
+                    if (place.website) {
+                        more_content += '<br/><br/><strong><a href="' + place.website + '" target="details">' + place.website + '</a>';
+                    }
+                }
+            });
+
+            google.maps.event.addListener(marker, 'click', function () {
+
+                this.infowindow.setContent(content + more_content);
+                this.infowindow.open(this.map, this);
+            });
         }
     }
 });
 
 /***/ }),
 /* 32 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-
-window._ = __webpack_require__(35);
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__form_form__ = __webpack_require__(34);
+window._ = __webpack_require__(37);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -1983,9 +2194,9 @@ window._ = __webpack_require__(35);
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(34);
+  window.$ = window.jQuery = __webpack_require__(36);
 
-  __webpack_require__(33);
+  __webpack_require__(35);
 } catch (e) {}
 
 /**
@@ -2027,8 +2238,163 @@ if (token) {
 //     key: 'your-pusher-key'
 // });
 
+
+window.Form = __WEBPACK_IMPORTED_MODULE_0__form_form__["a" /* default */];
+
+window.formatTempo = function (workout) {
+  workout.minutes = Math.round(workout.tempo / 60);
+  workout.seconds = workout.tempo - Math.round(workout.tempo / 60) * 60;
+
+  if (workout.seconds < 10) workout.seconds = '0' + workout.seconds;
+};
+
 /***/ }),
 /* 33 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Errors = function () {
+    function Errors() {
+        _classCallCheck(this, Errors);
+
+        this.errors = {};
+    }
+
+    _createClass(Errors, [{
+        key: "any",
+        value: function any() {
+            return Object.keys(this.errors).length > 0;
+        }
+    }, {
+        key: "has",
+        value: function has(field) {
+            return this.errors[field];
+        }
+    }, {
+        key: "get",
+        value: function get(field) {
+            if (this.errors[field]) {
+                return this.errors[field][0];
+            }
+        }
+    }, {
+        key: "clear",
+        value: function clear(field) {
+            delete this.errors[field];
+        }
+    }, {
+        key: "record",
+        value: function record(errors) {
+            this.errors = errors;
+        }
+    }]);
+
+    return Errors;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Errors);
+
+/***/ }),
+/* 34 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__errors__ = __webpack_require__(33);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+var Form = function () {
+    function Form(data, reset) {
+        _classCallCheck(this, Form);
+
+        this.originalData = data;
+
+        for (var field in data) {
+            this[field] = data[field];
+        }
+
+        this.errors = new __WEBPACK_IMPORTED_MODULE_0__errors__["a" /* default */]();
+        this.success = false;
+
+        if ((typeof reset === 'undefined' ? 'undefined' : _typeof(reset)) == undefined) {
+            this.reset = true;
+        } else {
+            this.reset = reset;
+        }
+    }
+
+    _createClass(Form, [{
+        key: 'onReset',
+        value: function onReset() {
+
+            if (this.reset !== false) {
+
+                for (var field in this.originalData) {
+                    console.log(this[field]);
+
+                    this[field] = '';
+                }
+            }
+        }
+    }, {
+        key: 'data',
+        value: function data() {
+            var data = Object.assign({}, this);
+
+            delete data.originalData;
+            delete data.errors;
+
+            return data;
+        }
+    }, {
+        key: 'submit',
+        value: function submit(method, route, reset) {
+            var _this = this;
+
+            return new Promise(function (resolve, reject) {
+                axios[method](route, _this.data()).then(function (response) {
+                    _this.onSuccess(response.data);
+                    resolve(response.data);
+                }).catch(function (error) {
+                    if (error.response) {
+                        _this.onFail(error.response.data);
+                        resolve(error.response.data);
+                    }
+                });
+            });
+        }
+    }, {
+        key: 'onSuccess',
+        value: function onSuccess(data) {
+            this.success = true;
+            this.onReset();
+        }
+    }, {
+        key: 'onFail',
+        value: function onFail(errors) {
+            if (errors) {
+                this.success = false;
+                this.errors.record(errors);
+            }
+        }
+    }]);
+
+    return Form;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Form);
+
+/***/ }),
+/* 35 */
 /***/ (function(module, exports) {
 
 /*!
@@ -4411,7 +4777,7 @@ if (typeof jQuery === 'undefined') {
 
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -14671,7 +15037,7 @@ return jQuery;
 
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -31760,10 +32126,10 @@ return jQuery;
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(44)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(46)(module)))
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -31953,14 +32319,14 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(2)(
   /* script */
   __webpack_require__(29),
   /* template */
-  __webpack_require__(41),
+  __webpack_require__(44),
   /* scopeId */
   null,
   /* cssModules */
@@ -31987,15 +32353,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 38 */,
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(2)(
   /* script */
-  __webpack_require__(31),
+  __webpack_require__(30),
   /* template */
-  __webpack_require__(40),
+  __webpack_require__(43),
   /* scopeId */
   null,
   /* cssModules */
@@ -32022,7 +32387,72 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 40 */
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(2)(
+  /* script */
+  __webpack_require__(31),
+  /* template */
+  __webpack_require__(42),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/jimmitjoo/Sites/friendsrunner/resources/assets/js/components/ShowWorkout.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] ShowWorkout.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-2c6dff7a", Component.options)
+  } else {
+    hotAPI.reload("data-v-2c6dff7a", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('table', {
+    staticClass: "table table-striped"
+  }, [_c('tr', [_c('td', [_vm._v(_vm._s(_vm.lang["workout.start"]) + ":")]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.workout.humanDate) + " " + _vm._s(_vm.workout.humanTime))])]), _vm._v(" "), _c('tr', [_c('td', [_vm._v(_vm._s(_vm.lang["workout.attendees"]) + ":")]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.workout.attendees.length + 1))])]), _vm._v(" "), _c('tr', [_c('td', [_vm._v(_vm._s(_vm.lang["workout.tempo"]) + ":")]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.workout.minutes) + ":" + _vm._s(_vm.workout.seconds) + "/km")])]), _vm._v(" "), _c('tr', [_c('td', [_vm._v(_vm._s(_vm.lang["workout.distance"]) + ":")]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.workout.distance) + " km")])]), _vm._v(" "), _c('tr', [_c('td', [_vm._v(_vm._s(_vm.lang["workout.join"]))]), _vm._v(" "), _c('td', [(_vm.myWorkout.id != _vm.workout.id && !_vm.workout.has_joined) ? _c('button', {
+    staticClass: "btn btn-success",
+    on: {
+      "click": function($event) {
+        _vm.joinWorkout(_vm.workout.id)
+      }
+    }
+  }, [_vm._v("\n                    " + _vm._s(_vm.lang["workout.join"]) + "\n                ")]) : _vm._e(), _vm._v(" "), (_vm.myWorkout.id != _vm.workout.id && _vm.workout.has_joined) ? _c('button', {
+    staticClass: "btn btn-danger",
+    on: {
+      "click": function($event) {
+        _vm.leaveWorkout(_vm.workout.id)
+      }
+    }
+  }, [_vm._v("\n                    " + _vm._s(_vm.lang["workout.leave"]) + "\n                ")]) : _vm._e(), _vm._v(" "), (_vm.myWorkout.id == _vm.workout.id) ? _c('span', [_vm._v(_vm._s(_vm.lang["workout.your_workout"]))]) : _vm._e()])]), _vm._v(" "), _c('tr', [_c('td', [_vm._v(_vm._s(_vm.lang["workout.proposed_meeting_place"]) + ":")]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.lang["workout.meeting_place_bus_station"]) + " " + _vm._s(_vm.meetingPlace))])])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-2c6dff7a", module.exports)
+  }
+}
+
+/***/ }),
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -32035,14 +32465,25 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('table', {
     staticClass: "table"
   }, [_c('thead', [_c('th', [_vm._v(_vm._s(_vm.lang["workout.start"]))]), _vm._v(" "), _vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _c('th', [_vm._v(_vm._s(_vm.lang["workout.distance"]))]), _vm._v(" "), _c('th', [_vm._v(_vm._s(_vm.lang["workout.how_far_away"]))]), _vm._v(" "), _c('th', [_vm._v(_vm._s(_vm.lang["workout.join"]))])]), _vm._v(" "), _vm._l((_vm.workouts), function(workout) {
-    return _c('tr', [_c('td', [_vm._v(_vm._s(workout.starts_at))]), _vm._v(" "), _c('td', [_vm._v("2")]), _vm._v(" "), _c('td', [_vm._v(_vm._s(workout.minutes) + ":" + _vm._s(workout.seconds) + "/km")]), _vm._v(" "), _c('td', [_vm._v(_vm._s(workout.distance) + " km")]), _vm._v(" "), _c('td', [_vm._v(_vm._s(parseFloat(workout.distance_in_km).toFixed(2)) + " km")]), _vm._v(" "), _c('td', [(_vm.myWorkout.id != workout.id) ? _c('button', {
+    return _c('tr', [_c('td', [_c('a', {
+      attrs: {
+        "href": '/workout/' + workout.id
+      }
+    }, [_vm._v(_vm._s(workout.starts_at))])]), _vm._v(" "), _c('td', [_vm._v(_vm._s(workout.attendees.length + 1))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(workout.minutes) + ":" + _vm._s(workout.seconds) + "/km")]), _vm._v(" "), _c('td', [_vm._v(_vm._s(workout.distance) + " km")]), _vm._v(" "), _c('td', [_vm._v(_vm._s(parseFloat(workout.distance_in_km).toFixed(2)) + " km")]), _vm._v(" "), _c('td', [(_vm.myWorkout.id != workout.id && !workout.has_joined) ? _c('button', {
       staticClass: "btn btn-success",
       on: {
         "click": function($event) {
           _vm.joinWorkout(workout.id)
         }
       }
-    }, [_vm._v(_vm._s(_vm.lang["workout.join"]) + "\n                        ")]) : _vm._e(), _vm._v(" "), (_vm.myWorkout.id == workout.id) ? _c('span', [_vm._v(_vm._s(_vm.lang["workout.your_workout"]))]) : _vm._e()])])
+    }, [_vm._v("\n                            " + _vm._s(_vm.lang["workout.join"]) + "\n                        ")]) : _vm._e(), _vm._v(" "), (_vm.myWorkout.id != workout.id && workout.has_joined) ? _c('button', {
+      staticClass: "btn btn-danger",
+      on: {
+        "click": function($event) {
+          _vm.leaveWorkout(workout.id)
+        }
+      }
+    }, [_vm._v("\n                            " + _vm._s(_vm.lang["workout.leave"]) + "\n                        ")]) : _vm._e(), _vm._v(" "), (_vm.myWorkout.id == workout.id) ? _c('span', [_vm._v(_vm._s(_vm.lang["workout.your_workout"]))]) : _vm._e()])])
   })], 2)])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('th', [_c('span', {
@@ -32062,7 +32503,7 @@ if (false) {
 }
 
 /***/ }),
-/* 41 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -32075,8 +32516,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('div', {
     staticClass: "alert alert-info"
-  }, [_vm._v("\n        " + _vm._s(_vm.lang['workout.create_explanation']) + "\n    ")]), _vm._v(" "), _c('div', {
-    staticClass: "form-group"
+  }, [_vm._v("\n        " + _vm._s(_vm.lang['workout.create_explanation']) + "\n    ")]), _vm._v(" "), (_vm.form.errors.any()) ? _c('div', {
+    staticClass: "alert alert-danger"
+  }, [_c('p', [_c('strong', [_vm._v(_vm._s(_vm.lang["validation.whoops_something_went_wrong"]))])]), _vm._v(" "), _c('ul', _vm._l((_vm.form.errors.errors), function(key, value, index) {
+    return _c('li', [_vm._v(_vm._s(_vm.lang[key]))])
+  }))]) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "form-group",
+    class: {
+      'has-error': this.form.errors.has('tempo')
+    }
   }, [_c('label', [_vm._v(_vm._s(_vm.lang["workout.expected_tempo"]))]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
@@ -32087,8 +32535,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.workout.tempoMinute),
-      expression: "workout.tempoMinute"
+      value: (_vm.tempoMinutes),
+      expression: "tempoMinutes"
     }],
     staticClass: "form-control",
     on: {
@@ -32099,13 +32547,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           var val = "_value" in o ? o._value : o.value;
           return val
         });
-        _vm.workout.tempoMinute = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+        _vm.tempoMinutes = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
       }
     }
   }, _vm._l((_vm.tempo.minutes), function(minutes) {
     return _c('option', {
       domProps: {
-        "selected": minutes == _vm.workout.tempoMinute,
+        "selected": minutes == _vm.tempoMinutes,
         "value": minutes
       }
     }, [_vm._v(_vm._s(minutes) + "\n                    ")])
@@ -32119,8 +32567,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.workout.tempoSeconds),
-      expression: "workout.tempoSeconds"
+      value: (_vm.tempoSeconds),
+      expression: "tempoSeconds"
     }],
     staticClass: "form-control",
     on: {
@@ -32131,13 +32579,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           var val = "_value" in o ? o._value : o.value;
           return val
         });
-        _vm.workout.tempoSeconds = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+        _vm.tempoSeconds = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
       }
     }
   }, _vm._l((_vm.tempo.seconds), function(seconds) {
     return _c('option', {
       domProps: {
-        "selected": seconds == _vm.workout.tempoSeconds,
+        "selected": seconds == _vm.tempoSeconds,
         "value": seconds
       }
     }, [_vm._v(_vm._s(seconds) + "\n                    ")])
@@ -32146,15 +32594,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v(_vm._s(_vm.lang["second_short"]))])])]), _vm._v(" "), _c('div', {
     staticClass: "col-xs-2"
   }, [_vm._v("\n                /km\n            ")])])]), _vm._v(" "), _c('div', {
-    staticClass: "form-group"
+    staticClass: "form-group",
+    class: {
+      'has-error': this.form.errors.has('distance')
+    }
   }, [_c('label', [_vm._v(_vm._s(_vm.lang["workout.expected_distance"]))]), _vm._v(" "), _c('div', {
     staticClass: "input-group"
   }, [_c('select', {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.workout.distance),
-      expression: "workout.distance"
+      value: (_vm.form.distance),
+      expression: "form.distance"
     }],
     staticClass: "form-control",
     on: {
@@ -32165,20 +32616,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           var val = "_value" in o ? o._value : o.value;
           return val
         });
-        _vm.workout.distance = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+        _vm.form.distance = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
       }
     }
-  }, _vm._l((_vm.distance), function(runDistance) {
+  }, _vm._l((_vm.distances), function(runDistance) {
     return _c('option', {
       domProps: {
-        "selected": runDistance == _vm.distance,
+        "selected": _vm.form.distance == _vm.distance,
         "value": runDistance
       }
     }, [_vm._v(_vm._s(runDistance) + "\n                ")])
   })), _vm._v(" "), _c('div', {
     staticClass: "input-group-addon"
   }, [_vm._v("km")])])]), _vm._v(" "), _c('div', {
-    staticClass: "form-group"
+    staticClass: "form-group",
+    class: {
+      'has-error': this.form.errors.has('starting')
+    }
   }, [_c('label', [_vm._v(_vm._s(_vm.lang["workout.when"]))]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
@@ -32187,21 +32641,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.workout.date),
-      expression: "workout.date"
+      value: (_vm.date),
+      expression: "date"
     }],
     staticClass: "form-control",
     attrs: {
       "type": "date"
     },
     domProps: {
-      "value": _vm.workout.date,
-      "value": (_vm.workout.date)
+      "value": _vm.date,
+      "value": (_vm.date)
     },
     on: {
       "input": function($event) {
         if ($event.target.composing) { return; }
-        _vm.workout.date = $event.target.value
+        _vm.date = $event.target.value
       }
     }
   })]), _vm._v(" "), _c('div', {
@@ -32214,8 +32668,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.workout.hour),
-      expression: "workout.hour"
+      value: (_vm.workoutHour),
+      expression: "workoutHour"
     }],
     staticClass: "form-control",
     on: {
@@ -32226,13 +32680,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           var val = "_value" in o ? o._value : o.value;
           return val
         });
-        _vm.workout.hour = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+        _vm.workoutHour = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
       }
     }
   }, _vm._l((_vm.hours), function(hour) {
     return _c('option', {
       domProps: {
-        "selected": hour == _vm.workout.hour,
+        "selected": hour == _vm.workoutHour,
         "value": hour
       }
     }, [_vm._v(_vm._s(hour) + "\n                        ")])
@@ -32240,7 +32694,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "input-group-addon"
   }, [_vm._v(":00")])])])])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
-  }, [(_vm.workout.latitude != null) ? _c('span', [_vm._v(_vm._s(_vm.lang["found_your_location"]))]) : _vm._e(), _vm._v(" "), (_vm.findingLocation) ? _c('span', [_vm._v(_vm._s(_vm.lang["loading"]))]) : _vm._e(), _vm._v(" "), (!_vm.workout.latitude) ? _c('button', {
+  }, [(_vm.latitude != null) ? _c('span', [_vm._v(_vm._s(_vm.lang["found_your_location"]))]) : _vm._e(), _vm._v(" "), (_vm.findingLocation) ? _c('span', [_vm._v(_vm._s(_vm.lang["loading"]))]) : _vm._e(), _vm._v(" "), (!_vm.latitude || !_vm.longitude) ? _c('button', {
     staticClass: "btn btn-default",
     attrs: {
       "disabled": _vm.findingLocation,
@@ -32252,13 +32706,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("\n            " + _vm._s(_vm.lang["find_my_location"]) + "\n        ")]) : _vm._e()]), _vm._v(" "), _c('button', {
     staticClass: "btn btn-primary",
     attrs: {
-      "disabled": _vm.workout.latitude == null || _vm.workout.longitude == null
+      "disabled": _vm.form.latitude == null || _vm.form.longitude == null
     }
-  }, [_vm._v(_vm._s(_vm.lang["workout.find_people_to_run_with"]) + "\n    ")]), _vm._v(" "), _c('ul', {
-    staticStyle: {
-      "display": "none"
-    }
-  }, [_c('li', [_vm._v("Tempo: " + _vm._s((_vm.workout.tempoMinute * 60) + _vm.workout.tempoSeconds))]), _vm._v(" "), _c('li', [_vm._v("Distance: " + _vm._s(_vm.workout.distance) + "km")]), _vm._v(" "), _c('li', [_vm._v("Date: " + _vm._s(_vm.workout.date))]), _vm._v(" "), _c('li', [_vm._v("Time: " + _vm._s(_vm.workout.hour) + ":00")]), _vm._v(" "), _c('li', [_vm._v("Lat: " + _vm._s(_vm.workout.latitude))]), _vm._v(" "), _c('li', [_vm._v("Long: " + _vm._s(_vm.workout.longitude))])])])
+  }, [_vm._v(_vm._s(_vm.lang["workout.find_people_to_run_with"]) + "\n    ")])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -32269,8 +32719,7 @@ if (false) {
 }
 
 /***/ }),
-/* 42 */,
-/* 43 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41969,7 +42418,7 @@ module.exports = Vue$3;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -41997,28 +42446,12 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(9);
-module.exports = __webpack_require__(10);
-
-
-/***/ }),
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./en.json": 56,
-	"./sv.json": 55
+	"./en.json": 48,
+	"./sv.json": 49
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -42034,17 +42467,72 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 54;
+webpackContext.id = 47;
 
 /***/ }),
-/* 55 */
+/* 48 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"hi": "Hi",
+	"loading": "Loading...",
+	"find_my_location": "Find My Location",
+	"found_your_location": "We Found Your Location!",
+	"minute_short": "min",
+	"second_short": "sec",
+	"time_prefix": "At:",
+	"join_or_wait_for_joins": "You can either wait for someone to join your workout, or you can join someone elses workout.",
+	"auth.failed": "These credentials do not match our records.",
+	"auth.throttle": "Too many login attempts. Please try again in :seconds seconds.",
+	"auth.register_information": "Find people in your area that wants to run with you.",
+	"pagination.previous": "&laquo; Previous",
+	"pagination.next": "Next &raquo;",
+	"passwords.password": "Passwords must be at least six characters and match the confirmation.",
+	"passwords.reset": "Your password has been reset!",
+	"passwords.sent": "We have e-mailed your password reset link!",
+	"passwords.token": "This password reset token is invalid.",
+	"passwords.user": "We can't find a user with that e-mail address.",
+	"validation.not_attending_workout": "You already have a workout booked within 2 hours from this one.",
+	"validation.accepted": "The :attribute must be accepted.",
+	"validation.active_url": "The :attribute is not a valid URL.",
+	"validation.after": "The :attribute must be a date after :date.",
+	"user.name": "Name",
+	"user.email": "E-mail Address",
+	"user.password": "Password",
+	"user.confirm_password": "Confirm Password",
+	"user.register": "Register",
+	"user.login": "Login",
+	"user.remember_me": "Remember me",
+	"user.forgot_password": "Forgot Your Password?",
+	"user.create_account": "Create Account",
+	"user.logout": "Log out",
+	"workout.create_workout": "Create Workout",
+	"workout.workouts_nearby": "Workouts Nearby",
+	"workout.expected_tempo": "Your expected tempo",
+	"workout.expected_distance": "Your expected distance",
+	"workout.when": "When does the workout start?",
+	"workout.find_people_to_run_with": "Find People To Run With",
+	"workout.start": "Start",
+	"workout.attendees": "Attendees",
+	"workout.tempo": "Tempo",
+	"workout.distance": "Distance",
+	"workout.how_far_away": "How Far Away?",
+	"workout.join": "Join",
+	"workout.leave": "Leave",
+	"workout.your_workout": "Your Workout",
+	"workout.proposed_meeting_place": "Proposed venue",
+	"workout.meeting_place_bus_station": "Bus stop"
+};
+
+/***/ }),
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = {
 	"hi": "Hej",
 	"loading": "Laddar...",
-	"find_my_location": "Hitta min placering",
-	"found_your_location": "Vi hittade din placering!",
+	"find_my_location": "Hitta min position",
+	"found_your_location": "Vi hittade din position!",
 	"minute_short": "min",
 	"second_short": "sek",
 	"time_prefix": "kl.",
@@ -42061,6 +42549,9 @@ module.exports = {
 	"passwords.sent": "Vi har mailat dig en återställningslänk för lösenordet.",
 	"passwords.token": "Detta är ingen giltig token.",
 	"passwords.user": "Vi kan inte hitta någon användare med den e-postadressen.",
+	"validation.whoops_something_went_wrong": "Oooojdå! Något blev visst galet...",
+	"validation.unrealistic_tempo": "Springer du verkligen så fort? Är du bättre än världseliten!? Sätt ett mer realistiskt kilometertempo.",
+	"validation.not_attending_workout": "Du har redan ett pass inbokat inom 2 timmar från detta passet.",
 	"validation.accepted": ":attribute måste accepteras.",
 	"validation.active_url": ":attribute är inte en giltig URL.",
 	"validation.after": ":attribute måste vara ett datum efter :date.",
@@ -42087,59 +42578,19 @@ module.exports = {
 	"workout.distance": "Distans",
 	"workout.how_far_away": "Hur långt bort?",
 	"workout.join": "Delta",
-	"workout.your_workout": "Ditt pass"
+	"workout.leave": "Lämna",
+	"workout.your_workout": "Ditt pass",
+	"workout.proposed_meeting_place": "Föreslagen mötesplats",
+	"workout.meeting_place_bus_station": "Busshållplats"
 };
 
 /***/ }),
-/* 56 */
-/***/ (function(module, exports) {
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = {
-	"hi": "Hi",
-	"loading": "Loading...",
-	"find_my_location": "Find My Location",
-	"found_your_location": "We Found Your Location!",
-	"minute_short": "min",
-	"second_short": "sec",
-	"time_prefix": "At:",
-	"join_or_wait_for_joins": "You can either wait for someone to join your workout, or you can join someone elses workout.",
-	"auth.failed": "These credentials do not match our records.",
-	"auth.throttle": "Too many login attempts. Please try again in :seconds seconds.",
-	"auth.register_information": "Find people in your area that wants to run with you.",
-	"pagination.previous": "&laquo; Previous",
-	"pagination.next": "Next &raquo;",
-	"passwords.password": "Passwords must be at least six characters and match the confirmation.",
-	"passwords.reset": "Your password has been reset!",
-	"passwords.sent": "We have e-mailed your password reset link!",
-	"passwords.token": "This password reset token is invalid.",
-	"passwords.user": "We can't find a user with that e-mail address.",
-	"validation.accepted": "The :attribute must be accepted.",
-	"validation.active_url": "The :attribute is not a valid URL.",
-	"validation.after": "The :attribute must be a date after :date.",
-	"user.name": "Name",
-	"user.email": "E-mail Address",
-	"user.password": "Password",
-	"user.confirm_password": "Confirm Password",
-	"user.register": "Register",
-	"user.login": "Login",
-	"user.remember_me": "Remember me",
-	"user.forgot_password": "Forgot Your Password?",
-	"user.create_account": "Create Account",
-	"user.logout": "Log out",
-	"workout.create_workout": "Create Workout",
-	"workout.workouts_nearby": "Workouts Nearby",
-	"workout.expected_tempo": "Your expected tempo",
-	"workout.expected_distance": "Your expected distance",
-	"workout.when": "When does the workout start?",
-	"workout.find_people_to_run_with": "Find People To Run With",
-	"workout.start": "Start",
-	"workout.attendees": "Attendees",
-	"workout.tempo": "Tempo",
-	"workout.distance": "Distance",
-	"workout.how_far_away": "How Far Away?",
-	"workout.join": "Join",
-	"workout.your_workout": "Your Workout"
-};
+__webpack_require__(9);
+module.exports = __webpack_require__(10);
+
 
 /***/ })
 /******/ ]);

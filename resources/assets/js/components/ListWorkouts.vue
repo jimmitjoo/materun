@@ -17,15 +17,17 @@
                     <th>{{ lang["workout.join"] }}</th>
                     </thead>
                     <tr v-for="workout in workouts">
-                        <td>{{ workout.starts_at }}</td>
-                        <td>2</td>
+                        <td><a :href="'/workout/' + workout.id">{{ workout.starts_at }}</a></td>
+                        <td>{{ workout.attendees.length + 1 }}</td>
                         <td>{{ workout.minutes }}:{{ workout.seconds }}/km</td>
                         <td>{{ workout.distance }} km</td>
                         <td>{{ parseFloat(workout.distance_in_km).toFixed(2) }} km</td>
                         <td>
-                            <button v-if="myWorkout.id != workout.id" @click="joinWorkout(workout.id)"
-                                    class="btn btn-success">{{ lang["workout.join"]
-                                }}
+                            <button v-if="myWorkout.id != workout.id && !workout.has_joined" @click="joinWorkout(workout.id)" class="btn btn-success">
+                                {{ lang["workout.join"] }}
+                            </button>
+                            <button v-if="myWorkout.id != workout.id && workout.has_joined" @click="leaveWorkout(workout.id)" class="btn btn-danger">
+                                {{ lang["workout.leave"] }}
                             </button>
                             <span v-if="myWorkout.id == workout.id">{{ lang["workout.your_workout"] }}</span>
                         </td>
@@ -70,27 +72,34 @@
                         this.workouts = response.data
 
                         this.workouts.forEach(workout => {
-                            this.formatTempo(workout)
+                            formatTempo(workout)
+
+                            workout.has_joined = false
+                            workout.attendees.forEach(attendee => {
+                                workout.has_joined = attendee.id == window.user_id
+                            })
                         })
                     })
-            },
-            formatTempo(workout) {
-                workout.minutes = Math.round(workout.tempo / 60);
-                workout.seconds = workout.tempo - (Math.round(workout.tempo / 60) * 60);
-
-                if (workout.seconds < 10) workout.seconds = '0' + workout.seconds;
             },
             joinWorkout(workout_id) {
 
                 axios.post('/api/workout/' + workout_id + '/join', {id: window.user_id})
                     .then(response => {
-
+                        this.getWorkouts();
                     }).catch(error => {
 
                 });
+            },
+            leaveWorkout(workout_id) {
 
-                console.log(window.user_id + ' wants to join ' + workout_id);
+                axios.post('/api/workout/' + workout_id + '/leave', {id: window.user_id})
+                    .then(response => {
+                        this.getWorkouts();
+                    }).catch(error => {
+
+                });
             }
+
         }
     }
 </script>

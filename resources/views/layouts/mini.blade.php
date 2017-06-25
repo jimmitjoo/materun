@@ -84,6 +84,7 @@
 </div>
 
 <!-- Scripts -->
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=true&libraries=places&key=AIzaSyD3dyF8fM33lfoAiAUZteZNmilb4qEMwPg"></script>
 <script src="{{ mix('js/app.js') }}"></script>
 <script>
     window.locale = '{{ config('app.locale') }}';

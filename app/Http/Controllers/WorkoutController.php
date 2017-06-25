@@ -15,11 +15,11 @@ class WorkoutController extends Controller
 
         $this->validate($request, [
             'user_id' => 'required|integer',
-            'tempo' => 'required|integer',
+            'tempo' => 'required|integer|unrealistic_tempo',
             'distance' => 'required|integer',
             'latitude' => 'required',
             'longitude' => 'required',
-            'starting' => 'required'
+            'starting' => 'required|not_attending_workout:' . $request->get('user_id'),
         ]);
 
         $workout = new Workout();
@@ -33,6 +33,25 @@ class WorkoutController extends Controller
 
         return $workout;
 
+    }
+
+    public function show($id){
+        $workout = Workout::with('attendees')->find($id);
+
+        $workout->humanTime = date('H:i', strtotime($workout->starting));
+
+        if (date('Y-m-d') == date('Y-m-d', strtotime($workout->starting))) {
+            $workout->humanDate = 'Today';
+        } elseif (date('Y-m-d', strtotime('+1 day')) == date('Y-m-d', strtotime($workout->starting))) {
+            $workout->humanDate = 'Tomorrow';
+        } else {
+            $workout->humanDate = date('d M');
+        }
+
+
+
+
+        return $workout;
     }
 
     public function getWorkoutsByCoordinates($latitude, $longitude)
@@ -53,11 +72,16 @@ class WorkoutController extends Controller
              ORDER BY distance_in_km ASC
              LIMIT 15');
 
+        $workouts = [];
         foreach ($nearbys as $n) {
-            $n->starts_at = date('H:i', strtotime($n->stdate));
+            //$n->starts_at = date('H:i', strtotime($n->stdate));
+            $workout = Workout::with('attendees')->find($n->id);
+            $workout->starts_at = date('H:i', strtotime($workout->starting));
+            $workout->distance_in_km = $n->distance_in_km;
+            $workouts[] = $workout;
         }
 
-        return $nearbys;
+        return $workouts;
 
     }
 
@@ -65,7 +89,15 @@ class WorkoutController extends Controller
 
         $user_id = $request->get('id');
 
-        $workout_id->users()->attach($user_id);
+        $workout_id->attendees()->attach($user_id);
+
+    }
+
+    public function leave(Workout $workout_id, Request $request){
+
+        $user_id = $request->get('id');
+
+        $workout_id->attendees()->detach($user_id);
 
     }
 }

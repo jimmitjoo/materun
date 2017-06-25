@@ -2,8 +2,8 @@
   "hi": "Hej",
 
   "loading": "Laddar...",
-  "find_my_location": "Hitta min placering",
-  "found_your_location": "Vi hittade din placering!",
+  "find_my_location": "Hitta min position",
+  "found_your_location": "Vi hittade din position!",
   "minute_short": "min",
   "second_short": "sek",
   "time_prefix": "kl.",
@@ -26,6 +26,9 @@
   "passwords.token": "Detta är ingen giltig token.",
   "passwords.user": "Vi kan inte hitta någon användare med den e-postadressen.",
 
+  "validation.whoops_something_went_wrong": "Oooojdå! Något blev visst galet...",
+  "validation.unrealistic_tempo": "Springer du verkligen så fort? Är du bättre än världseliten!? Sätt ett mer realistiskt kilometertempo.",
+  "validation.not_attending_workout": "Du har redan ett pass inbokat inom 2 timmar från detta passet.",
   "validation.accepted": ":attribute måste accepteras.",
   "validation.active_url": ":attribute är inte en giltig URL.",
   "validation.after": ":attribute måste vara ett datum efter :date.",
@@ -56,7 +59,10 @@
   "workout.distance": "Distans",
   "workout.how_far_away": "Hur långt bort?",
   "workout.join": "Delta",
-  "workout.your_workout": "Ditt pass"
+  "workout.leave": "Lämna",
+  "workout.your_workout": "Ditt pass",
+  "workout.proposed_meeting_place": "Föreslagen mötesplats",
+  "workout.meeting_place_bus_station": "Busshållplats"
 
 
 }

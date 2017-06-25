@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -17,10 +16,26 @@ window.Vue = require('vue');
 
 Vue.component('create-workout', require('./components/CreateWorkout.vue'));
 Vue.component('list-workouts', require('./components/ListWorkouts.vue'));
+Vue.component('show-workout', require('./components/ShowWorkout.vue'));
 
 if (typeof window.locale == 'undefined') window.locale = 'sv';
 window.lang = require('../../lang/' + window.locale + '.json');
 
-const app = new Vue({
-    el: '#app'
+const app = window.app = new Vue({
+    el: '#app',
+
+    methods: {
+
+
+       /* mapInit() {
+            let map;
+            let infowindow;
+            let service;
+
+
+            google.maps.event.addDomListener(window, 'load', function () {
+
+            });
+        }*/
+    }
 });

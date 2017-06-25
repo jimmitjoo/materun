@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Workout extends Model
 {
-    public function users(){
-        return $this->hasMany('App\User');
+    public function owner(){
+        return $this->hasOne('App\User');
+    }
+
+    public function attendees(){
+        return $this->belongsToMany('App\User', 'workout_user');
     }
 }

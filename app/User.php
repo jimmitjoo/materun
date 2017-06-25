@@ -27,7 +27,13 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function workouts(){
+        return $this->belongsToMany('App\Workout', 'workout_user');
+    }
+
     public function getMyWorkoutAttribute(){
-        return Workout::where('user_id', $this->id)->latest()->first()->id;
+        if ($workout = Workout::where('user_id', $this->id)->latest()->first()) return $workout->id;
+
+        return 0;
     }
 }

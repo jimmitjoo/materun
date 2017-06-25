@@ -1,4 +1,3 @@
-
 window._ = require('lodash');
 
 /**
@@ -11,7 +10,8 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap-sass');
-} catch (e) {}
+} catch (e) {
+}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -51,3 +51,13 @@ if (token) {
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key'
 // });
+
+import Form from './form/form';
+window.Form = Form;
+
+window.formatTempo = function (workout) {
+    workout.minutes = Math.round(workout.tempo / 60);
+    workout.seconds = workout.tempo - (Math.round(workout.tempo / 60) * 60);
+
+    if (workout.seconds < 10) workout.seconds = '0' + workout.seconds;
+};
