@@ -20,13 +20,13 @@
             <tr>
                 <td>{{ lang["workout.join"] }}</td>
                 <td>
-                    <button v-if="myWorkout.id != workout.id && !workout.has_joined" @click="joinWorkout(workout.id)" class="btn btn-success">
+                    <button v-if="myWorkout.id != workout.id && !workout.has_joined && window.user_id != workout.user_id" @click="joinWorkout(workout.id)" class="btn btn-success">
                         {{ lang["workout.join"] }}
                     </button>
-                    <button v-if="myWorkout.id != workout.id && workout.has_joined" @click="leaveWorkout(workout.id)" class="btn btn-danger">
+                    <button v-if="myWorkout.id != workout.id && workout.has_joined && window.user_id != workout.user_id" @click="leaveWorkout(workout.id)" class="btn btn-danger">
                         {{ lang["workout.leave"] }}
                     </button>
-                    <span v-if="myWorkout.id == workout.id">{{ lang["workout.your_workout"] }}</span>
+                    <span v-if="myWorkout.id == workout.id || window.user_id == workout.user_id">{{ lang["workout.your_workout"] }}</span>
                 </td>
             </tr>
 

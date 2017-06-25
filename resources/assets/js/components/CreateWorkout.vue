@@ -150,7 +150,9 @@
                 this.form.user_id = window.user_id
 
                 this.form.submit('post', '/api/workout').then(response => {
-                    if (typeof response.data !== 'undefined' && typeof response.data.id !== 'undefined') window.user_workout = response.data.id;
+                    if (typeof response.data !== 'undefined' && typeof response.data.id !== 'undefined') {
+                        window.user_workout = response.data.id;
+                    }
 
                     window.location.href = "/list";
                 });
