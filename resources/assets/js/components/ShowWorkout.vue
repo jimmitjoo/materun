@@ -54,13 +54,14 @@
                 this.myWorkout = {
                     id: window.user_workout
                 }
+                this.user_id = window.user_id
             }, 1);
 
         },
         data() {
             return {
                 lang: window.lang,
-                user_id: window.user_id,
+                user_id: null,
                 myWorkout: {},
                 workout: {
                     attendees: []
@@ -148,7 +149,7 @@
             },
 
             mapCreateMarker(place) {
-                
+
                 let placeLoc = place.geometry.location;
                 let marker = new google.maps.Marker({
                     map: this.map,

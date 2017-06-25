@@ -5,6 +5,13 @@
             <p>{{ lang["join_or_wait_for_joins"] }}</p>
         </div>
 
+        <div class="alert alert-danger" v-if="errors.any()">
+            <p><strong>{{ lang["validation.whoops_something_went_wrong"] }}</strong></p>
+            <ul>
+                <li v-for="(key, value, index) in errors.errors">{{ lang[key] }}</li>
+            </ul>
+        </div>
+
         <div class="row">
             <div class="table-responsive">
                 <table class="table">
@@ -39,6 +46,8 @@
 </template>
 
 <script>
+    import Errors from '../form/errors';
+
     export default {
         mounted() {
 
@@ -62,7 +71,8 @@
                 lang: window.lang,
                 myLocation: {},
                 myWorkout: {},
-                workouts: []
+                workouts: [],
+                errors: new Errors()
             }
         },
         methods: {
@@ -87,7 +97,7 @@
                     .then(response => {
                         this.getWorkouts();
                     }).catch(error => {
-
+                        this.errors.errors = error.response.data
                 });
             },
             leaveWorkout(workout_id) {

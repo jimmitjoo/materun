@@ -89,6 +89,14 @@ class WorkoutController extends Controller
 
         $user_id = $request->get('id');
 
+        $request->merge(['starting' => $workout_id->starting]);
+
+
+        $this->validate($request, [
+            'starting' => 'required|not_attending_workout:' . $user_id,
+        ]);
+
+
         $workout_id->attendees()->attach($user_id);
 
     }
