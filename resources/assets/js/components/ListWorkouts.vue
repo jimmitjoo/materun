@@ -14,36 +14,34 @@
 
         <div class="row">
             <div class="col-xs-12">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <th>{{ lang["workout.start"] }}</th>
-                        <th><span class="glyphicon glyphicon-user"></span></th>
-                        <th><span class="glyphicon glyphicon-time"></span></th>
-                        <th>{{ lang["workout.distance"] }}</th>
-                        <th>{{ lang["workout.how_far_away"] }}</th>
-                        <th>{{ lang["workout.join"] }}</th>
-                        </thead>
-                        <tr v-for="workout in workouts">
-                            <td><a :href="'/workout/' + workout.id">{{ workout.starts_at }}</a></td>
-                            <td>{{ workout.attendees.length + 1 }}</td>
-                            <td>{{ workout.minutes }}:{{ workout.seconds }}/km</td>
-                            <td>{{ workout.distance }} km</td>
-                            <td>{{ parseFloat(workout.distance_in_km).toFixed(2) }} km</td>
-                            <td>
-                                <button v-if="myWorkout.id != workout.id && !workout.has_joined"
-                                        @click="joinWorkout(workout.id)" class="btn btn-success">
-                                    {{ lang["workout.join"] }}
-                                </button>
-                                <button v-if="myWorkout.id != workout.id && workout.has_joined"
-                                        @click="leaveWorkout(workout.id)" class="btn btn-danger">
-                                    {{ lang["workout.leave"] }}
-                                </button>
-                                <span v-if="myWorkout.id == workout.id">{{ lang["workout.your_workout"] }}</span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                <table class="table">
+                    <thead>
+                    <th>{{ lang["workout.start"] }}</th>
+                    <th><span class="glyphicon glyphicon-user"></span></th>
+                    <th><span class="glyphicon glyphicon-time"></span></th>
+                    <th>{{ lang["workout.distance"] }}</th>
+                    <th>{{ lang["workout.how_far_away"] }}</th>
+                    <th>{{ lang["workout.join"] }}</th>
+                    </thead>
+                    <tr v-for="workout in workouts">
+                        <td><a :href="'/workout/' + workout.id">{{ workout.starts_at }}</a></td>
+                        <td>{{ workout.attendees.length + 1 }}</td>
+                        <td>{{ workout.minutes }}:{{ workout.seconds }}/km</td>
+                        <td>{{ workout.distance }} km</td>
+                        <td>{{ parseFloat(workout.distance_in_km).toFixed(2) }} km</td>
+                        <td>
+                            <button v-if="myWorkout.id != workout.id && !workout.has_joined"
+                                    @click="joinWorkout(workout.id)" class="btn btn-success">
+                                {{ lang["workout.join"] }}
+                            </button>
+                            <button v-if="myWorkout.id != workout.id && workout.has_joined"
+                                    @click="leaveWorkout(workout.id)" class="btn btn-danger">
+                                {{ lang["workout.leave"] }}
+                            </button>
+                            <span v-if="myWorkout.id == workout.id">{{ lang["workout.your_workout"] }}</span>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
