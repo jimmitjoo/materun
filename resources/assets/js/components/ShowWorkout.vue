@@ -20,13 +20,13 @@
             <tr>
                 <td>{{ lang["workout.join"] }}</td>
                 <td>
-                    <button v-if="myWorkout.id != workout.id && !workout.has_joined && window.user_id != workout.user_id" @click="joinWorkout(workout.id)" class="btn btn-success">
+                    <button v-if="myWorkout.id != workout.id && !workout.has_joined && user_id != workout.user_id" @click="joinWorkout(workout.id)" class="btn btn-success">
                         {{ lang["workout.join"] }}
                     </button>
-                    <button v-if="myWorkout.id != workout.id && workout.has_joined && window.user_id != workout.user_id" @click="leaveWorkout(workout.id)" class="btn btn-danger">
+                    <button v-if="myWorkout.id != workout.id && workout.has_joined && user_id != workout.user_id" @click="leaveWorkout(workout.id)" class="btn btn-danger">
                         {{ lang["workout.leave"] }}
                     </button>
-                    <span v-if="myWorkout.id == workout.id || window.user_id == workout.user_id">{{ lang["workout.your_workout"] }}</span>
+                    <span v-if="myWorkout.id == workout.id || user_id == workout.user_id">{{ lang["workout.your_workout"] }}</span>
                 </td>
             </tr>
 
@@ -60,6 +60,7 @@
         data() {
             return {
                 lang: window.lang,
+                user_id: window.user_id,
                 myWorkout: {},
                 workout: {
                     attendees: []
@@ -111,9 +112,6 @@
 
             mapInitialize(lat, lng) {
 
-                console.log(lat);
-                console.log(lng);
-
                 let origin = new google.maps.LatLng(lat, lng);
 
 
@@ -150,9 +148,7 @@
             },
 
             mapCreateMarker(place) {
-
-                console.log(place)
-
+                
                 let placeLoc = place.geometry.location;
                 let marker = new google.maps.Marker({
                     map: this.map,
