@@ -42613,6 +42613,7 @@ webpackContext.id = 47;
 
 module.exports = {
 	"hi": "Hi",
+	"terms": "Terms",
 	"delete": "Delete",
 	"loading": "Loading...",
 	"find_my_location": "Find My Location",
@@ -42671,6 +42672,7 @@ module.exports = {
 
 module.exports = {
 	"hi": "Hej",
+	"terms": "Villkor",
 	"delete": "Radera",
 	"loading": "Laddar...",
 	"find_my_location": "Hitta min position",

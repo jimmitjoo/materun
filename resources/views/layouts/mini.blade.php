@@ -50,6 +50,7 @@
                         @if (Auth::guest())
                             <li><a href="{{ route('login') }}">{{ __('user.login') }}</a></li>
                             <li><a href="{{ route('register') }}">{{ __('user.register') }}</a></li>
+                            <li><a href="{{ route('terms') }}">{{ __('terms') }}</a></li>
                         @else
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
