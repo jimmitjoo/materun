@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Workout;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class WorkoutController extends Controller
@@ -29,6 +30,7 @@ class WorkoutController extends Controller
         $workout->latitude = $request->get('latitude');
         $workout->longitude = $request->get('longitude');
         $workout->starting = $request->get('starting');
+        $workout->description = $request->get('description');
         $workout->save();
 
         return $workout;
@@ -48,13 +50,18 @@ class WorkoutController extends Controller
             $workout->humanDate = date('d M');
         }
 
-
-
-
         return $workout;
     }
 
-    public function getWorkoutsByCoordinates($latitude, $longitude)
+    public function destroy($id){
+
+        dd($id);
+
+        $workout = Workout::where('id',$id)->where('user_id', $user_id)->first();
+        $workout->delete();
+    }
+
+    public function getWorkoutsByCoordinates($latitude, $longitude, $radie = 25)
     {
 
         $nearbys = DB::select('SELECT * FROM(SELECT id, `starting` as stdate, distance, tempo, latitude, longitude,
@@ -68,7 +75,7 @@ class WorkoutController extends Controller
                  SELECT ' . $latitude . ' AS latpoint,  ' . $longitude . ' AS longpoint
                ) AS p
              ORDER BY distance_in_km ASC) AS x
-             WHERE distance_in_km < 25 AND DATE(stdate) >= DATE(NOW()) AND DATE(stdate) = CURDATE() 
+             WHERE distance_in_km < ' . $radie . ' AND DATE(stdate) >= DATE(NOW()) AND DATE(stdate) = CURDATE() 
              ORDER BY distance_in_km ASC
              LIMIT 15');
 

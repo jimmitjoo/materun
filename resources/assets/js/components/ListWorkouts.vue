@@ -14,6 +14,23 @@
 
         <div class="row">
             <div class="col-xs-12">
+                <label>{{ lang["workout.how_far_can_you_travel"] }}</label>
+            </div>
+            <div class="col-xs-7">
+                <div class="input-group">
+                    <input type="number" class="form-control" v-model="radie">
+                    <div class="input-group-addon">km</div>
+                </div>
+            </div>
+            <div class="col-xs-5">
+                <button class="btn btn-default" @click="getWorkouts">Filtrera</button>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-xs-12">
                 <table class="table">
                     <thead>
                     <th>{{ lang["workout.start"] }}</th>
@@ -73,12 +90,27 @@
                 myLocation: {},
                 myWorkout: {},
                 workouts: [],
-                errors: new Errors()
+                errors: new Errors(),
+                firstLoad: true,
+                radie: 25
             }
         },
         methods: {
             getWorkouts() {
-                axios.get('/api/workout/' + this.myLocation.latitude + '/' + this.myLocation.longitude)
+
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(position => {
+                        this.myLocation.latitude = position.coords.latitude
+                        this.myLocation.longitude = position.coords.longitude
+
+                        localStorage.setItem('myLocation', JSON.stringify({
+                            latitude: this.myLocation.latitude,
+                            longitude: this.myLocation.longitude
+                        }))
+                    });
+                }
+
+                axios.get('/api/workout/' + this.myLocation.latitude + '/' + this.myLocation.longitude + '/' + this.radie)
                     .then(response => {
                         this.workouts = response.data
 

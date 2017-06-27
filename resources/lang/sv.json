@@ -1,6 +1,7 @@
 {
   "hi": "Hej",
 
+  "delete": "Radera",
   "loading": "Laddar...",
   "find_my_location": "Hitta min position",
   "found_your_location": "Vi hittade din position!",
@@ -60,9 +61,11 @@
   "workout.how_far_away": "Hur långt bort?",
   "workout.join": "Delta",
   "workout.leave": "Lämna",
+  "workout.description": "Beskrivning av passet",
   "workout.your_workout": "Ditt pass",
   "workout.proposed_meeting_place": "Föreslagen mötesplats",
-  "workout.meeting_place_bus_station": "Busshållplats"
+  "workout.meeting_place_bus_station": "Busshållplats",
+  "workout.how_far_can_you_travel": "Hur långt bort får passet vara?"
 
 
 }

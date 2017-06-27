@@ -1,6 +1,7 @@
 {
   "hi": "Hi",
 
+  "delete": "Delete",
   "loading": "Loading...",
   "find_my_location": "Find My Location",
   "found_your_location": "We Found Your Location!",
@@ -54,9 +55,11 @@
   "workout.how_far_away": "How Far Away?",
   "workout.join": "Join",
   "workout.leave": "Leave",
+  "workout.description": "Description of run",
   "workout.your_workout": "Your Workout",
   "workout.proposed_meeting_place": "Proposed venue",
-  "workout.meeting_place_bus_station": "Bus stop"
+  "workout.meeting_place_bus_station": "Bus stop",
+  "workout.how_far_can_you_travel": "How far away can you travel to run?"
 
 
 }

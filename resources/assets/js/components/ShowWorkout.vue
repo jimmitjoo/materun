@@ -27,7 +27,13 @@
                         {{ lang["workout.leave"] }}
                     </button>
                     <span v-if="myWorkout.id == workout.id || user_id == workout.user_id">{{ lang["workout.your_workout"] }}</span>
+                    <button v-if="myWorkout.id == workout.id || user_id == workout.user_id" class="btn btn-danger" @click="deleteWorkout(workout.id)">{{ lang["delete"] }}</button>
                 </td>
+            </tr>
+
+            <tr>
+                <td>{{ lang["workout.description"] }}:</td>
+                <td>{{ workout.description }}</td>
             </tr>
 
             <tr>
@@ -107,6 +113,15 @@
                         this.getWorkout();
                     }).catch(error => {
 
+                });
+            },
+            deleteWorkout(workout_id) {
+                axios.delete('/api/workout/' + workout_id)
+                    .then(response => {
+                        console.log(response)
+                        //this.getWorkout();
+                    }).catch(error => {
+                        console.log(error)
                 });
             },
 

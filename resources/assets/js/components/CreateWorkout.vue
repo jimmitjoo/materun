@@ -77,6 +77,10 @@
             </div>
         </div>
         <div class="form-group">
+            <label>{{ lang["workout.description"] }}</label>
+            <textarea class="form-control" rows="3" v-model="form.description"></textarea>
+        </div>
+        <div class="form-group">
             <span v-if="latitude != null">{{ lang["found_your_location"] }}</span>
             <span v-if="findingLocation">{{ lang["loading"] }}</span>
             <button v-if="!latitude || !longitude" :disabled="findingLocation" type="button" @click="getMyLocation" class="btn btn-default">
@@ -117,6 +121,7 @@
                     starting: null,
                     latitude: null,
                     longitude: null,
+                    description: ''
                 }),
                 getLocationAutomatically: true,
                 findingLocation: false,
@@ -153,7 +158,6 @@
                     if (typeof response.data !== 'undefined' && typeof response.data.id !== 'undefined') {
                         window.user_workout = response.data.id;
                     }
-
                     window.location.href = "/list";
                 });
             }
