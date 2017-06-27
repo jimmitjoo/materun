@@ -67,6 +67,10 @@
                             </div>
                         </div>
 
+                        <p><a href="{{ route('terms') }}">{{ __('terms') }}</a></p>
+                        <p>{{ __('accepting_terms_by_register') }}</p>
+
+
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">

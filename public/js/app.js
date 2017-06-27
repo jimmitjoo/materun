@@ -42680,6 +42680,7 @@ module.exports = {
 	"minute_short": "min",
 	"second_short": "sek",
 	"time_prefix": "kl.",
+	"accepting_terms_by_register": "Genom att skapa konto accepterar du våra villkor.",
 	"join_or_wait_for_joins": "Du kan antingen vänta på att andra deltar i ditt pass, eller kan du delta i någon annans pass.",
 	"auth.failed": "Tyvärr är detta felaktiga inloggningsuppgifter.",
 	"auth.throttle": "För många inloggningsförsök. Var god försök igen om :seconds sekunder.",

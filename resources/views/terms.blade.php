@@ -11,4 +11,8 @@
         </ul>
 
     </div>
+    <div class="col-xs-12">
+        <a class="btn btn-success btn-lg center-block" href="{{ route('register') }}">{{ __('user.create_account') }}</a>
+    </div>
+    
 @endsection
