@@ -85,7 +85,7 @@ class WorkoutController extends Controller
         foreach ($nearbys as $n) {
             //$n->starts_at = date('H:i', strtotime($n->stdate));
             $workout = Workout::with('attendees')->find($n->id);
-            $workout->starts_at = date('H:i', strtotime($workout->starting));
+            $workout->starts_at = date('d/m H:i', strtotime($workout->starting));
             $workout->distance_in_km = $n->distance_in_km;
             $workouts[] = $workout;
         }
