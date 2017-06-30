@@ -1,8 +1,11 @@
 {
   "hi": "Hej",
+  "hello": "Hallå",
 
   "terms": "Villkor",
   "delete": "Radera",
+  "whoops": "Ojdå",
+  "regards": "Vänliga hälsningar",
   "loading": "Laddar...",
   "find_my_location": "Hitta min position",
   "found_your_location": "Vi hittade din position!",
@@ -67,7 +70,9 @@
   "workout.your_workout": "Ditt pass",
   "workout.proposed_meeting_place": "Föreslagen mötesplats",
   "workout.meeting_place_bus_station": "Busshållplats",
-  "workout.how_far_can_you_travel": "Hur långt bort får passet vara?"
+  "workout.how_far_can_you_travel": "Hur långt bort får passet vara?",
+
+  "workout.someone_joined_your_workout": "Någon gick med i ditt pass!"
 
 
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\JoinedWorkout;
+use App\User;
 use App\Workout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -92,11 +94,13 @@ class WorkoutController extends Controller
 
     }
 
-    public function join(Workout $workout_id, Request $request){
+    public function join($workout_id, Request $request){
 
         $user_id = $request->get('id');
 
-        $request->merge(['starting' => $workout_id->starting]);
+        $workout = Workout::find($workout_id);
+
+        $request->merge(['starting' => $workout->starting]);
 
 
         $this->validate($request, [
@@ -104,7 +108,11 @@ class WorkoutController extends Controller
         ]);
 
 
-        $workout_id->attendees()->attach($user_id);
+        $workout->attendees()->attach($user_id);
+
+        $user = User::find($workout->user_id);
+
+        $user->notify(new JoinedWorkout($workout));
 
     }
 

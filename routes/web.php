@@ -22,7 +22,7 @@ Route::get('/list', function() {
 });
 Route::get('workout/{id}', function($id) {
     return view('workouts.show')->with(['id' => $id]);
-});
+})->name('workout');
 
 Auth::routes();
 

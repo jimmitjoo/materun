@@ -1,5 +1,7 @@
 @extends('layouts.mini')
 
+@section('body_class', 'login')
+
 @section('content')
     <div class="row">
         <div class="col-xs-12">

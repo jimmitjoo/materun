@@ -13,7 +13,7 @@
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
-<body>
+<body class="@yield('body_class')">
 <div id="app">
     @if (Route::has('login'))
         <nav class="navbar navbar-default navbar-static-top">
