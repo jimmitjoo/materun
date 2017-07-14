@@ -21,3 +21,6 @@ Route::resource('workout', 'WorkoutController');
 Route::get('workout/{latitude}/{longitude}/{radie}', 'WorkoutController@getWorkoutsByCoordinates');
 Route::post('workout/{workout_id}/join', 'WorkoutController@join');
 Route::post('workout/{workout_id}/leave', 'WorkoutController@leave');
+
+Route::post('auth/token', 'Api\Auth\DefaultController@authenticate');
+Route::post('auth/refresh', 'Api\Auth\DefaultController@refreshToken');
